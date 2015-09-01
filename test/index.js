@@ -31,13 +31,13 @@ describe("facebook-client", function() {
     it("should resolve to empty object if facebook not enabled", function () {
       config.enabled = false;
 
-      facebook.makeRequest("token", "me").then(function(res) {
+      return facebook.makeRequest("token", "me").then(function(res) {
         expect(res).to.be.an("object");
         expect(Object.keys(res)).to.have.length(0);
       });
     });
 
-    it("should make a request if facebook is enabled", function () {
+    it("should make a request if facebook is enabled", function() {
       config.enabled = true;
 
       var mockResponse = {
@@ -53,20 +53,20 @@ describe("facebook-client", function() {
         .get("/test")
         .reply(200, mockResponse);
 
-      facebook.makeRequest("test").then(function(res) {
+      return facebook.makeRequest("test").then(function(res) {
         expect(res).to.be.an("object");
-        expect(res.body.email).to.eql(mockResponse.email);
-        expect(res.body.first_name).to.eql(mockResponse.first_name);
-        expect(res.body.last_name).to.eql(mockResponse.last_name);
-        expect(res.body.email).to.eql(mockResponse.email);
+        expect(res.id).to.eql(mockResponse.id);
+        expect(res.first_name).to.eql(mockResponse.first_name);
+        expect(res.last_name).to.eql(mockResponse.last_name);
+        expect(res.email).to.eql(mockResponse.email);
       });
     });
   });
 
-  describe("me()", function () {
+  describe("me()", function() {
     var facebook = facebookClient("token", config);
 
-    it("should make a request to get the user profile", function () {
+    it("should make a request to get the user profile", function() {
       config.enabled = true;
 
       var mockResponse = {
@@ -82,12 +82,48 @@ describe("facebook-client", function() {
         .get("/me")
         .reply(200, mockResponse);
 
-      facebook.me().then(function(res) {
+      return facebook.me().then(function(res) {
         expect(res).to.be.an("object");
-        expect(res.body.email).to.eql(mockResponse.email);
-        expect(res.body.first_name).to.eql(mockResponse.first_name);
-        expect(res.body.last_name).to.eql(mockResponse.last_name);
-        expect(res.body.email).to.eql(mockResponse.email);
+        expect(res.id).to.eql(mockResponse.id);
+        expect(res.first_name).to.eql(mockResponse.first_name);
+        expect(res.last_name).to.eql(mockResponse.last_name);
+        expect(res.email).to.eql(mockResponse.email);
+      });
+    });
+  });
+
+  describe("friends()", function() {
+    var facebook = facebookClient("token", config);
+
+    it("should make a request to get the users friends", function() {
+      config.enabled = true;
+
+      var mockResponse = {
+        "data": [
+          {
+            "name": "Homer Simpson",
+            "id": "1234567"
+          }
+        ],
+        "summary": {
+          "total_count": 1
+        }
+      };
+
+      // Nock out facebook messages
+      nock(facebook.url)
+        .get("/me/friends")
+        .reply(200, mockResponse);
+
+      return facebook.friends().then(function(res) {
+        expect(res).to.be.an("object");
+        expect(res.data).to.be.an("array");
+        expect(res.data[0].name).to.eql(mockResponse.data[0].name);
+        expect(res.data[0].id).to.eql(mockResponse.data[0].id);
+
+        expect(res.summary).to.be.an("object");
+        expect(res.summary.id).to.eql(mockResponse.summary.id);
+        expect(res.summary.total_count).to.eql(mockResponse.summary.total_count);
       });
     });
   });
