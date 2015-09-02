@@ -31,7 +31,7 @@ describe("facebook-client", function() {
     it("should resolve to empty object if facebook not enabled", function () {
       config.enabled = false;
 
-      return facebook.makeRequest("token", "me").then(function(res) {
+      return facebook.makeRequest("me").then(function(res) {
         expect(res).to.be.an("object");
         expect(Object.keys(res)).to.have.length(0);
       });
@@ -54,11 +54,11 @@ describe("facebook-client", function() {
         .reply(200, mockResponse);
 
       return facebook.makeRequest("test").then(function(res) {
-        expect(res).to.be.an("object");
-        expect(res.id).to.eql(mockResponse.id);
-        expect(res.first_name).to.eql(mockResponse.first_name);
-        expect(res.last_name).to.eql(mockResponse.last_name);
-        expect(res.email).to.eql(mockResponse.email);
+        expect(res.body).to.be.an("object");
+        expect(res.body.id).to.eql(mockResponse.id);
+        expect(res.body.first_name).to.eql(mockResponse.first_name);
+        expect(res.body.last_name).to.eql(mockResponse.last_name);
+        expect(res.body.email).to.eql(mockResponse.email);
       });
     });
   });
@@ -83,11 +83,11 @@ describe("facebook-client", function() {
         .reply(200, mockResponse);
 
       return facebook.me().then(function(res) {
-        expect(res).to.be.an("object");
-        expect(res.id).to.eql(mockResponse.id);
-        expect(res.first_name).to.eql(mockResponse.first_name);
-        expect(res.last_name).to.eql(mockResponse.last_name);
-        expect(res.email).to.eql(mockResponse.email);
+        expect(res.body).to.be.an("object");
+        expect(res.body.id).to.eql(mockResponse.id);
+        expect(res.body.first_name).to.eql(mockResponse.first_name);
+        expect(res.body.last_name).to.eql(mockResponse.last_name);
+        expect(res.body.email).to.eql(mockResponse.email);
       });
     });
   });
@@ -116,14 +116,14 @@ describe("facebook-client", function() {
         .reply(200, mockResponse);
 
       return facebook.friends().then(function(res) {
-        expect(res).to.be.an("object");
-        expect(res.data).to.be.an("array");
-        expect(res.data[0].name).to.eql(mockResponse.data[0].name);
-        expect(res.data[0].id).to.eql(mockResponse.data[0].id);
+        expect(res.body).to.be.an("object");
+        expect(res.body.data).to.be.an("array");
+        expect(res.body.data[0].name).to.eql(mockResponse.data[0].name);
+        expect(res.body.data[0].id).to.eql(mockResponse.data[0].id);
 
-        expect(res.summary).to.be.an("object");
-        expect(res.summary.id).to.eql(mockResponse.summary.id);
-        expect(res.summary.total_count).to.eql(mockResponse.summary.total_count);
+        expect(res.body.summary).to.be.an("object");
+        expect(res.body.summary.id).to.eql(mockResponse.summary.id);
+        expect(res.body.summary.total_count).to.eql(mockResponse.summary.total_count);
       });
     });
   });
