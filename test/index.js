@@ -127,4 +127,30 @@ describe("facebook-client", function() {
       });
     });
   });
+
+  describe("profilePhoto()", function() {
+    var facebook = facebookClient("token", config);
+
+    it("should make a request and get the URL of the users profile image", function() {
+      config.enabled = true;
+
+      var mockResponse = {
+        "data": {
+          "url": "https://example.com/someuser/profile.jpg"
+        }
+      };
+
+      // Nock out facebook
+      nock(facebook.url)
+        .get("/me/picture")
+        .reply(200, mockResponse);
+
+      return facebook.profilePhoto().then(function(res) {
+        expect(res).to.be.an("object");
+        expect(res.data).to.be.an("object");
+        expect(res.data.url).to.be.a("string");
+        expect(res.data.url).to.eql(mockResponse.data.url);
+      });
+    });
+  });
 });
