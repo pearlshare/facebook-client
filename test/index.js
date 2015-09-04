@@ -61,6 +61,18 @@ describe("facebook-client", function() {
         expect(res.body.email).to.eql(mockResponse.email);
       });
     });
+
+    it("should handle a 400 error", function() {
+      config.enabled = true;
+
+      nock(facebook.url)
+        .get("/test")
+        .reply(400, {});
+
+      return facebook.makeRequest("test").then(function(res) {
+        expect(res.statusCode).to.equal(400);
+      });
+    });
   });
 
   describe("me()", function() {
