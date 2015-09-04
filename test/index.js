@@ -11,7 +11,7 @@ describe("facebook-client", function() {
   describe("configuration", function() {
     it("should throw an error if no authToken is provided", function() {
       try {
-        facebookClient();
+        facebookClient().client();
       }
       catch (err) {
         expect(err).to.be.an(Error);
@@ -20,13 +20,13 @@ describe("facebook-client", function() {
     });
 
     it("should initate wether or not a configuration object is given", function() {
-      expect(facebookClient("token", {enabled: false})).to.be.an("object"); // With config
-      expect(facebookClient("token")).to.be.an("object"); // Without config
+      expect(facebookClient({enabled: false}).client("token")).to.be.an("object"); // With config
+      expect(facebookClient().client("token")).to.be.an("object"); // Without config
     });
   });
 
   describe("makeRequest", function () {
-    var facebook = facebookClient("token", config);
+    var facebook = facebookClient(config).client("token");
 
     it("should resolve to empty object if facebook not enabled", function () {
       config.enabled = false;
@@ -76,7 +76,7 @@ describe("facebook-client", function() {
   });
 
   describe("me()", function() {
-    var facebook = facebookClient("token", config);
+    var facebook = facebookClient(config).client("token");
 
     it("should make a request to get the user profile", function() {
       config.enabled = true;
@@ -105,7 +105,7 @@ describe("facebook-client", function() {
   });
 
   describe("friends()", function() {
-    var facebook = facebookClient("token", config);
+    var facebook = facebookClient(config).client("token");
 
     it("should make a request to get the users friends", function() {
       config.enabled = true;
@@ -141,7 +141,7 @@ describe("facebook-client", function() {
   });
 
   describe("profilePhoto()", function() {
-    var facebook = facebookClient("token", config);
+    var facebook = facebookClient(config).client("token");
 
     it("should make a request and get the URL of the users profile image", function() {
       config.enabled = true;
@@ -158,10 +158,10 @@ describe("facebook-client", function() {
         .reply(200, mockResponse);
 
       return facebook.profilePhoto().then(function(res) {
-        expect(res).to.be.an("object");
-        expect(res.data).to.be.an("object");
-        expect(res.data.url).to.be.a("string");
-        expect(res.data.url).to.eql(mockResponse.data.url);
+        expect(res.body).to.be.an("object");
+        expect(res.body.data).to.be.an("object");
+        expect(res.body.data.url).to.be.a("string");
+        expect(res.body.data.url).to.eql(mockResponse.data.url);
       });
     });
   });
