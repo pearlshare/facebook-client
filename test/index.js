@@ -11,7 +11,7 @@ describe("facebook-client", function() {
   describe("configuration", function() {
     it("should throw an error if no authToken is provided", function() {
       try {
-        facebookClient();
+        facebookClient().client();
       }
       catch (err) {
         expect(err).to.be.an(Error);
@@ -20,13 +20,13 @@ describe("facebook-client", function() {
     });
 
     it("should initate wether or not a configuration object is given", function() {
-      expect(facebookClient("token", {enabled: false})).to.be.an("object"); // With config
-      expect(facebookClient("token")).to.be.an("object"); // Without config
+      expect(facebookClient({enabled: false}).client("token")).to.be.an("object"); // With config
+      expect(facebookClient().client("token")).to.be.an("object"); // Without config
     });
   });
 
   describe("makeRequest", function () {
-    var facebook = facebookClient("token", config);
+    var facebook = facebookClient(config).client("token");
 
     it("should resolve to empty object if facebook not enabled", function () {
       config.enabled = false;
@@ -76,7 +76,7 @@ describe("facebook-client", function() {
   });
 
   describe("me()", function() {
-    var facebook = facebookClient("token", config);
+    var facebook = facebookClient(config).client("token");
 
     it("should make a request to get the user profile", function() {
       config.enabled = true;
@@ -105,7 +105,7 @@ describe("facebook-client", function() {
   });
 
   describe("friends()", function() {
-    var facebook = facebookClient("token", config);
+    var facebook = facebookClient(config).client("token");
 
     it("should make a request to get the users friends", function() {
       config.enabled = true;
