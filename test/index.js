@@ -71,6 +71,7 @@ describe("facebook-client", function() {
 
       return facebook.makeRequest("test").then(function(res) {
         expect(res.statusCode).to.equal(400);
+        expect(res.body).to.be.an("object");
       });
     });
   });
