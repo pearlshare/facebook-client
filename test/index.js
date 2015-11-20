@@ -155,7 +155,7 @@ describe("facebook-client", function() {
 
       // Nock out facebook
       nock(facebook.url)
-        .get("/me/picture")
+        .get("/me/picture?redirect=0")
         .reply(200, mockResponse);
 
       return facebook.profilePhoto().then(function(res) {
