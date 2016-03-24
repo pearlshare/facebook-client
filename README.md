@@ -1,3 +1,4 @@
+[![Circle CI](https://circleci.com/gh/pearlshare/facebook-client.svg?style=svg&circle-token=ba2743ea4375a7eb29f22220c78eadb885ba8c02)](https://circleci.com/gh/pearlshare/facebook-client)
 # facebook-client
 
 A wrapper around the facebook graph API to make requests and handle responses.
