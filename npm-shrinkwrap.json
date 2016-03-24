@@ -1,6 +1,6 @@
 {
   "name": "facebook-client",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
     "assertion-error": {
       "version": "1.0.1",
