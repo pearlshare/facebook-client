@@ -14,6 +14,7 @@ describe("facebook-client", function() {
         facebookClient().client();
       }
       catch (err) {
+        console.log(err)
         expect(err).to.be.an(Error);
         expect(err.message).to.match(/authToken/);
       }
@@ -50,7 +51,7 @@ describe("facebook-client", function() {
 
       // Nock out facebook messages
       nock(facebook.url)
-        .get("/test")
+        .get("/" + facebook.apiVersion + "/test")
         .reply(200, mockResponse);
 
       return facebook.makeRequest("test").then(function(res) {
@@ -66,7 +67,7 @@ describe("facebook-client", function() {
       config.enabled = true;
 
       nock(facebook.url)
-        .get("/test")
+        .get("/" + facebook.apiVersion + "/test")
         .reply(400, {});
 
       return facebook.makeRequest("test").then(function(res) {
@@ -78,8 +79,25 @@ describe("facebook-client", function() {
 
   describe("me()", function() {
     var facebook = facebookClient(config).client("token");
-
     it("should make a request to get the user profile", function() {
+      config.enabled = true;
+
+      var mockResponse = {
+        id: "1234567",
+        name: "Homer Simpson"
+      };
+
+      nock(facebook.url)
+        .get("/" + facebook.apiVersion + "/me")
+        .reply(200, mockResponse);
+
+      return facebook.me().then(function(res) {
+        expect(res.body).to.be.an("object");
+        expect(res.body.id).to.eql(mockResponse.id);
+      });
+    });
+
+    it("should make a request to get the user profile with fields", function() {
       config.enabled = true;
 
       var mockResponse = {
@@ -90,12 +108,12 @@ describe("facebook-client", function() {
         email: "homer@example.com"
       };
 
-      // Nock out facebook messages
       nock(facebook.url)
-        .get("/me")
+        .get("/" + facebook.apiVersion + "/me")
+        .query({"fields": "first_name,last_name,email,bio"})
         .reply(200, mockResponse);
 
-      return facebook.me().then(function(res) {
+      return facebook.me(["first_name", "last_name", "email", "bio"]).then(function(res) {
         expect(res.body).to.be.an("object");
         expect(res.body.id).to.eql(mockResponse.id);
         expect(res.body.first_name).to.eql(mockResponse.first_name);
@@ -125,7 +143,7 @@ describe("facebook-client", function() {
 
       // Nock out facebook messages
       nock(facebook.url)
-        .get("/me/friends")
+        .get("/" + facebook.apiVersion + "/me/friends")
         .reply(200, mockResponse);
 
       return facebook.friends().then(function(res) {
@@ -155,7 +173,7 @@ describe("facebook-client", function() {
 
       // Nock out facebook
       nock(facebook.url)
-        .get("/me/picture?redirect=0")
+        .get("/" + facebook.apiVersion + "/me/picture?redirect=0")
         .reply(200, mockResponse);
 
       return facebook.profilePhoto().then(function(res) {
