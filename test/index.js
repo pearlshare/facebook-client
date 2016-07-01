@@ -184,4 +184,40 @@ describe("facebook-client", function() {
       });
     });
   });
+
+  describe("profilePhotoRedirectUrl()", function() {
+    var facebook = facebookClient(config).client("token");
+
+    it("should construct an redirect image url given userId", function() {
+      config.enabled = true;
+
+      var userId = 123;
+      return facebook.profilePhotoRedirectUrl(userId).then(function(url) {
+        expect(url).to.be.an("string");
+
+        var re = new RegExp(userId, "g");
+        expect(url).to.match(re);
+      });
+    });
+
+    it("should construct an redirect image url by getting userId if not provided", function() {
+      config.enabled = true;
+      var mockResponse = {
+        "data": {
+          "name": "John Pasupula",
+          "id": "123"
+        }
+      };
+      nock(facebook.url)
+        .get("/" + facebook.apiVersion + "/me")
+        .reply(200, mockResponse);
+
+      return facebook.profilePhotoRedirectUrl().then(function(url) {
+        expect(url).to.be.an("string");
+
+        var re = new RegExp(mockResponse.data.id, "g");
+        expect(url).to.match(re);
+      });
+    });
+  });
 });
