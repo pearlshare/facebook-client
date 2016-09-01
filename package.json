@@ -1,6 +1,6 @@
 {
   "name": "facebook-client",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A helper library for making requests to facebook's graph API",
   "main": "index.js",
   "scripts": {
