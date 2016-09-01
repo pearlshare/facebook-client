@@ -1,6 +1,6 @@
 {
   "name": "facebook-client",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A helper library for making requests to facebook's graph API",
   "main": "index.js",
   "scripts": {
@@ -16,12 +16,14 @@
     "test": "test"
   },
   "devDependencies": {
+    "eslint": "^3.0.0",
     "expect.js": "^0.3.1",
-    "mocha": "^2.5.3",
+    "mocha": "^3.0.2",
     "nock": "^8.0.0"
   },
   "dependencies": {
-    "bluebird": "^3.4.1",
-    "got": "^6.3.0"
+    "bluebird": "^3.4.5",
+    "got": "^6.3.0",
+    "lodash.get": "^4.4.2"
   }
 }
