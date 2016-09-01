@@ -6,21 +6,21 @@ var config = {
   enabled: false // Disabled for testing
 };
 
-describe("facebook-client", function() {
+describe("facebook-client", function () {
 
-  describe("configuration", function() {
-    it("should throw an error if no authToken is provided", function() {
+  describe("configuration", function () {
+    it("should throw an error if no authToken is provided", function () {
       try {
         facebookClient().client();
       }
       catch (err) {
-        console.log(err)
+        console.log(err);
         expect(err).to.be.an(Error);
         expect(err.message).to.match(/authToken/);
       }
     });
 
-    it("should initate wether or not a configuration object is given", function() {
+    it("should initate wether or not a configuration object is given", function () {
       expect(facebookClient({enabled: false}).client("token")).to.be.an("object"); // With config
       expect(facebookClient().client("token")).to.be.an("object"); // Without config
     });
@@ -32,13 +32,13 @@ describe("facebook-client", function() {
     it("should resolve to empty object if facebook not enabled", function () {
       config.enabled = false;
 
-      return facebook.makeRequest("me").then(function(res) {
+      return facebook.makeRequest("me").then(function (res) {
         expect(res).to.be.an("object");
         expect(Object.keys(res)).to.have.length(0);
       });
     });
 
-    it("should make a request if facebook is enabled", function() {
+    it("should make a request if facebook is enabled", function () {
       config.enabled = true;
 
       var mockResponse = {
@@ -54,7 +54,7 @@ describe("facebook-client", function() {
         .get("/" + facebook.apiVersion + "/test")
         .reply(200, mockResponse);
 
-      return facebook.makeRequest("test").then(function(res) {
+      return facebook.makeRequest("test").then(function (res) {
         expect(res.body).to.be.an("object");
         expect(res.body.id).to.eql(mockResponse.id);
         expect(res.body.first_name).to.eql(mockResponse.first_name);
@@ -63,23 +63,23 @@ describe("facebook-client", function() {
       });
     });
 
-    it("should handle a 400 error", function() {
+    it("should handle a 400 error", function () {
       config.enabled = true;
 
       nock(facebook.url)
         .get("/" + facebook.apiVersion + "/test")
         .reply(400, {});
 
-      return facebook.makeRequest("test").then(function(res) {
+      return facebook.makeRequest("test").then(function (res) {
         expect(res.statusCode).to.equal(400);
         expect(res.body).to.be.an("object");
       });
     });
   });
 
-  describe("me()", function() {
+  describe("me()", function () {
     var facebook = facebookClient(config).client("token");
-    it("should make a request to get the user profile", function() {
+    it("should make a request to get the user profile", function () {
       config.enabled = true;
 
       var mockResponse = {
@@ -91,13 +91,13 @@ describe("facebook-client", function() {
         .get("/" + facebook.apiVersion + "/me")
         .reply(200, mockResponse);
 
-      return facebook.me().then(function(res) {
+      return facebook.me().then(function (res) {
         expect(res.body).to.be.an("object");
         expect(res.body.id).to.eql(mockResponse.id);
       });
     });
 
-    it("should make a request to get the user profile with fields", function() {
+    it("should make a request to get the user profile with fields", function () {
       config.enabled = true;
 
       var mockResponse = {
@@ -113,7 +113,7 @@ describe("facebook-client", function() {
         .query({"fields": "first_name,last_name,email,bio"})
         .reply(200, mockResponse);
 
-      return facebook.me(["first_name", "last_name", "email", "bio"]).then(function(res) {
+      return facebook.me(["first_name", "last_name", "email", "bio"]).then(function (res) {
         expect(res.body).to.be.an("object");
         expect(res.body.id).to.eql(mockResponse.id);
         expect(res.body.first_name).to.eql(mockResponse.first_name);
@@ -123,10 +123,10 @@ describe("facebook-client", function() {
     });
   });
 
-  describe("friends()", function() {
+  describe("friends()", function () {
     var facebook = facebookClient(config).client("token");
 
-    it("should make a request to get the users friends", function() {
+    it("should make a request to get the users friends", function () {
       config.enabled = true;
 
       var mockResponse = {
@@ -146,7 +146,7 @@ describe("facebook-client", function() {
         .get("/" + facebook.apiVersion + "/me/friends")
         .reply(200, mockResponse);
 
-      return facebook.friends().then(function(res) {
+      return facebook.friends().then(function (res) {
         expect(res.body).to.be.an("object");
         expect(res.body.data).to.be.an("array");
         expect(res.body.data[0].name).to.eql(mockResponse.data[0].name);
@@ -159,10 +159,10 @@ describe("facebook-client", function() {
     });
   });
 
-  describe("profilePhoto()", function() {
+  describe("profilePhoto()", function () {
     var facebook = facebookClient(config).client("token");
 
-    it("should make a request and get the URL of the users profile image", function() {
+    it("should make a request and get the URL of the users profile image", function () {
       config.enabled = true;
 
       var mockResponse = {
@@ -176,7 +176,7 @@ describe("facebook-client", function() {
         .get("/" + facebook.apiVersion + "/me/picture?redirect=0")
         .reply(200, mockResponse);
 
-      return facebook.profilePhoto().then(function(res) {
+      return facebook.profilePhoto().then(function (res) {
         expect(res.body).to.be.an("object");
         expect(res.body.data).to.be.an("object");
         expect(res.body.data.url).to.be.a("string");
@@ -185,14 +185,14 @@ describe("facebook-client", function() {
     });
   });
 
-  describe("profilePhotoRedirectUrl()", function() {
+  describe("profilePhotoRedirectUrl()", function () {
     var facebook = facebookClient(config).client("token");
 
-    it("should construct an redirect image url given userId", function() {
+    it("should construct an redirect image url given userId", function () {
       config.enabled = true;
 
       var userId = 123;
-      return facebook.profilePhotoRedirectUrl(userId).then(function(url) {
+      return facebook.profilePhotoRedirectUrl(userId).then(function (url) {
         expect(url).to.be.an("string");
 
         var re = new RegExp(userId, "g");
@@ -200,7 +200,7 @@ describe("facebook-client", function() {
       });
     });
 
-    it("should construct an redirect image url by getting userId if not provided", function() {
+    it("should construct an redirect image url by getting userId if not provided", function () {
       config.enabled = true;
       var mockResponse = {
         "data": {
@@ -212,11 +212,25 @@ describe("facebook-client", function() {
         .get("/" + facebook.apiVersion + "/me")
         .reply(200, mockResponse);
 
-      return facebook.profilePhotoRedirectUrl().then(function(url) {
+      return facebook.profilePhotoRedirectUrl().then(function (url) {
         expect(url).to.be.an("string");
 
         var re = new RegExp(mockResponse.data.id, "g");
         expect(url).to.match(re);
+      });
+    });
+
+    it("should null if failed to fetch userinfo and userId if not provided", function () {
+      config.enabled = true;
+      var mockResponse = {
+        "data": {}
+      };
+      nock(facebook.url)
+        .get("/" + facebook.apiVersion + "/me")
+        .reply(200, mockResponse);
+
+      return facebook.profilePhotoRedirectUrl().then(function (url) {
+        expect(url).to.be.equal(null);
       });
     });
   });
